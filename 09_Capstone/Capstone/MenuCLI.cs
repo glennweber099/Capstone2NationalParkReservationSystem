@@ -15,7 +15,7 @@ namespace Capstone
         private ISiteSqlDAO siteDAO;
         private IReservationSqlDAO reservationDAO;
         private Dictionary<int, Park> parksDict= new Dictionary<int, Park>();
-        
+        public int parkId { get; set; }
 
         public MenuCLI(IParkSqlDAO parkDAO, ICampgroundSqlDAO campgroundDAO, ISiteSqlDAO siteDAO, IReservationSqlDAO reservationDAO)
         {
@@ -50,15 +50,16 @@ namespace Capstone
                 string selection = Console.ReadLine();
                 if (selection.Trim().ToLower() == "q")
                 {
-                    return;
+                    Environment.Exit(0);
                 }
 
                 bool selectionIsInt = int.TryParse(selection, out int parkSelection);
 
                 if (selectionIsInt && parksDict.ContainsKey(parkSelection))
                 {
+                    parkId = parkSelection;
                     Console.Clear();
-                    ParkInformationScreen(parkSelection);
+                    ParkInformationScreen();
                 }
                 else
                 {
@@ -70,20 +71,20 @@ namespace Capstone
             }
         }
 
-        private void ParkInformationScreen(int selection)
+        private void ParkInformationScreen()
         {
-            Console.WriteLine(parksDict[selection].Name);
-            Console.WriteLine($"Location: {parksDict[selection].Location}");
-            Console.WriteLine($"Established: {parksDict[selection].EstablishDate}");
-            Console.WriteLine($"Area: {parksDict[selection].Area}");
-            Console.WriteLine($"Annual Visitors: {parksDict[selection].Visitors}");
+            Console.WriteLine(parksDict[parkId].Name);
+            Console.WriteLine($"Location: {parksDict[parkId].Location}");
+            Console.WriteLine($"Established: {parksDict[parkId].EstablishDate}");
+            Console.WriteLine($"Area: {parksDict[parkId].Area}");
+            Console.WriteLine($"Annual Visitors: {parksDict[parkId].Visitors}");
             Console.WriteLine();
-            Console.WriteLine($"{parksDict[selection].Description}");
+            Console.WriteLine($"{parksDict[parkId].Description}");
             Console.WriteLine();
-            SelectACommand(selection, 1);
+            SelectACommand(1);
         }
 
-        private void SelectACommand(int selection, int commandOption)
+        private void SelectACommand(int commandOption)
         {
             while (true)
             {
@@ -101,36 +102,36 @@ namespace Capstone
 
                 if (userSelection == "1" && commandOption == 1)
                 {
-                    GetCampgrounds(selection);
+                    GetCampgrounds(parkId);
                 }
                 else if (userSelection == "2" && commandOption == 1)
                 {
                     Console.Clear();
                     ViewParksInterface();
                 }
-                else if (commandOption == 1 && userSelection != "1" || userSelection != "2")
+                else if (commandOption == 1 && userSelection != "1" && userSelection != "2")
                 {
                     Console.WriteLine("Please enter a valid selection.");
                     Console.ReadLine();
                     Console.Clear();
-                    ParkInformationScreen(selection);
+                    ParkInformationScreen();
                 }
 
                 else if (userSelection == "1" && commandOption == 2)
                 {
-                    CheckAvailability(selection);
+                    CheckAvailability(commandOption);
                 }
                 else if (userSelection == "2" && commandOption == 2)
                 {
                     Console.Clear();
-                    ParkInformationScreen(int.Parse(userSelection));
+                    ParkInformationScreen();
                 }
-                else if (commandOption == 1 && userSelection != "1" || userSelection != "2")
+                else if (commandOption == 2 && userSelection != "1" && userSelection != "2")
                 {
                     Console.WriteLine("Please enter a valid selection.");
                     Console.ReadLine();
                     Console.Clear();
-                    ParkInformationScreen(selection);
+                    ParkInformationScreen();
                 }
             }
         }
@@ -148,13 +149,29 @@ namespace Capstone
                 Console.WriteLine($"#{i + 1} {Convert.ToString(camps[i].Name),-35} {Convert.ToString(camps[i].OpenMonth),-15} {Convert.ToString(camps[i].CloseMonth),-15} {(camps[i].DailyFee).ToString("C")}");
             }
             Console.WriteLine();
-            SelectACommand(parkId, 2);
+            SelectACommand(2);
         }
 
         private void CheckAvailability(int selection)
         {
-            GetCampgrounds(selection);
+            Console.Clear();
+            Console.WriteLine("Park Campgrounds");
+            Console.WriteLine($"{parksDict[parkId].Name} National Park Campgrounds");
+            Console.WriteLine();
+            Console.WriteLine($"    {"Name",-35}{"Open",-15}{"Close",-15}{"Daily Fee",-15}");
+            IList<Campground> camps = campgroundDAO.GetCampgrounds(parkId);
+            for (int i = 0; i < camps.Count; i++)
+            {
+                Console.WriteLine($"#{i + 1} {Convert.ToString(camps[i].Name),-35} {Convert.ToString(camps[i].OpenMonth),-15} {Convert.ToString(camps[i].CloseMonth),-15} {(camps[i].DailyFee).ToString("C")}");
+            }
+            Console.WriteLine();
 
+            Console.WriteLine("Which campground (enter 0 to cancel)?_____");
+            string campgroundNumber = Console.ReadLine().Trim();
+            Console.WriteLine("What is the arrival date? __/__/____");
+            string arrivalDate = Console.ReadLine().Trim();
+            Console.WriteLine("What is the departure date? __/__/____");
+            string departureDate = Console.ReadLine().Trim();
         }
     }
 }
