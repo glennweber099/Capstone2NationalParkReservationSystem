@@ -6,7 +6,7 @@ using Capstone.Models;
 
 namespace Capstone.DAL
 {
-    class CampgroundSqlDAO : ICampgroundSqlDAO
+    public class CampgroundSqlDAO : ICampgroundSqlDAO
     {
         private string connectionString;
         public CampgroundSqlDAO(string dbConnectionString)
