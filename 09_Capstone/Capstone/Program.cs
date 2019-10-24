@@ -23,7 +23,7 @@ namespace Capstone
             ISiteSqlDAO siteDAO = new SiteSqlDAO(connectionString);
             IReservationSqlDAO reservationDAO = new ReservationSqlDAO(connectionString);
 
-            ProjectCLI projectCLI = new ProjectCLI(parkDAO, campgroundDAO, siteDAO, reservationDAO); // objects that implement interfaces
+            MenuCLI projectCLI = new MenuCLI(parkDAO, campgroundDAO, siteDAO, reservationDAO); // objects that implement interfaces
             projectCLI.RunCLI();
 
             Console.ReadLine();

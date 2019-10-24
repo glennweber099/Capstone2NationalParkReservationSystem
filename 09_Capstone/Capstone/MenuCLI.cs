@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Capstone
 {
-    public class ProjectCLI
+    public class MenuCLI
     {
         private IParkSqlDAO parkDAO;
         private ICampgroundSqlDAO campgroundDAO;
@@ -17,7 +17,7 @@ namespace Capstone
         private Dictionary<int, Park> parksDict= new Dictionary<int, Park>();
         
 
-        public ProjectCLI(IParkSqlDAO parkDAO, ICampgroundSqlDAO campgroundDAO, ISiteSqlDAO siteDAO, IReservationSqlDAO reservationDAO)
+        public MenuCLI(IParkSqlDAO parkDAO, ICampgroundSqlDAO campgroundDAO, ISiteSqlDAO siteDAO, IReservationSqlDAO reservationDAO)
         {
             this.parkDAO = parkDAO;
             this.campgroundDAO = campgroundDAO;
@@ -79,29 +79,53 @@ namespace Capstone
             Console.WriteLine($"Annual Visitors: {parksDict[selection].Visitors}");
             Console.WriteLine();
             Console.WriteLine($"{parksDict[selection].Description}");
-
-            SelectACommand(selection);
+            Console.WriteLine();
+            SelectACommand(selection, 1);
         }
 
-        private void SelectACommand(int selection)
+        private void SelectACommand(int selection, int commandOption)
         {
             while (true)
             {
-                Console.WriteLine("1) View Campgrounds");
+                if (commandOption == 1)
+                {
+                    Console.WriteLine("1) View Campgrounds");
+                }
+                else if (commandOption == 2)
+                {
+                    Console.WriteLine("1) Search for Available Reservation");
+                }
                 Console.WriteLine("2) Return to Previous Screen");
                 Console.WriteLine();
                 string userSelection = Console.ReadLine().Trim();
 
-                if (userSelection == "1")
+                if (userSelection == "1" && commandOption == 1)
                 {
                     GetCampgrounds(selection);
                 }
-                else if (userSelection == "2")
+                else if (userSelection == "2" && commandOption == 1)
                 {
                     Console.Clear();
-                    break;
+                    ViewParksInterface();
                 }
-                else
+                else if (commandOption == 1 && userSelection != "1" || userSelection != "2")
+                {
+                    Console.WriteLine("Please enter a valid selection.");
+                    Console.ReadLine();
+                    Console.Clear();
+                    ParkInformationScreen(selection);
+                }
+
+                else if (userSelection == "1" && commandOption == 2)
+                {
+                    CheckAvailability(selection);
+                }
+                else if (userSelection == "2" && commandOption == 2)
+                {
+                    Console.Clear();
+                    ParkInformationScreen(int.Parse(userSelection));
+                }
+                else if (commandOption == 1 && userSelection != "1" || userSelection != "2")
                 {
                     Console.WriteLine("Please enter a valid selection.");
                     Console.ReadLine();
@@ -113,6 +137,23 @@ namespace Capstone
 
         private void GetCampgrounds(int parkId)
         {
+            Console.Clear();
+            Console.WriteLine("Park Campgrounds");
+            Console.WriteLine($"{parksDict[parkId].Name} National Park Campgrounds");
+            Console.WriteLine();
+            Console.WriteLine($"    {"Name", -35}{"Open",-15}{"Close",-15}{"Daily Fee",-15}");
+            IList<Campground> camps = campgroundDAO.GetCampgrounds(parkId);
+            for (int i = 0; i < camps.Count; i++)
+            {
+                Console.WriteLine($"#{i + 1} {Convert.ToString(camps[i].Name),-35} {Convert.ToString(camps[i].OpenMonth),-15} {Convert.ToString(camps[i].CloseMonth),-15} {(camps[i].DailyFee).ToString("C")}");
+            }
+            Console.WriteLine();
+            SelectACommand(parkId, 2);
+        }
+
+        private void CheckAvailability(int selection)
+        {
+            GetCampgrounds(selection);
 
         }
     }
