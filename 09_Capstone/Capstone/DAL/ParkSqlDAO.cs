@@ -53,7 +53,7 @@ namespace Capstone.DAL
                 {
                     connection.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT name FROM park", connection);
+                    SqlCommand cmd = new SqlCommand("SELECT * FROM park", connection);
 
                     SqlDataReader reader = cmd.ExecuteReader();
                     List<Park> parks = new List<Park>();
@@ -61,6 +61,11 @@ namespace Capstone.DAL
                     {
                         Park park = new Park();
                         park.Name = Convert.ToString(reader["name"]);
+                        park.Location = Convert.ToString(reader["location"]);
+                        park.EstablishDate = Convert.ToDateTime(reader["establish_date"]).Date;
+                        park.Area = Convert.ToInt32(reader["area"]);
+                        park.Visitors = Convert.ToInt32(reader["visitors"]);
+                        park.Description = Convert.ToString(reader["description"]);
                         parks.Add(park);
                     }
                     return parks;
