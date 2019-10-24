@@ -7,7 +7,7 @@ namespace Capstone.DAL
 {
     public interface ICampgroundSqlDAO
     {
-        IList<Campground> GetCampgrounds();
+        IList<Campground> GetCampgrounds(int parkId);
         bool CheckAvailability(int campgroundId, DateTime arrival, DateTime departure);
 
     }

@@ -13,6 +13,6 @@ namespace Capstone.Models
         public bool IsAccessible { get; set; }
         public int MaxRVLength { get; set; }
         public bool HasUtilities { get; set; }
-
+        public decimal DailyFee { get; set; }
     }
 }
