@@ -62,6 +62,7 @@ namespace Capstone.DAL
                     while (reader.Read())
                     {
                         Campground campground = new Campground();
+                        campground.Id = Convert.ToInt32(reader["campground_id"]);
                         campground.Name = Convert.ToString(reader["name"]);
                         campground.OpenMonth = Convert.ToInt32(reader["open_from_mm"]);
                         campground.CloseMonth = Convert.ToInt32(reader["open_to_mm"]);

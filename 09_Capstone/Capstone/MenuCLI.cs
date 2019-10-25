@@ -141,11 +141,11 @@ namespace Capstone
             Console.WriteLine("Park Campgrounds");
             Console.WriteLine($"{parksDict[parkId].Name} National Park Campgrounds");
             Console.WriteLine();
-            Console.WriteLine($"    {"Name", -35}{"Open",-15}{"Close",-15}{"Daily Fee",-15}");
+            Console.WriteLine($"{"",-18}{"Name", -35}{"Open",-16}{"Close",-16}{"Daily Fee",-15}");
             IList<Campground> camps = campgroundDAO.GetCampgrounds(parkId);
             for (int i = 0; i < camps.Count; i++)
             {
-                Console.WriteLine($"#{i + 1} {Convert.ToString(camps[i].Name),-35} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(camps[i].OpenMonth),-15} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(camps[i].CloseMonth),-15} {(camps[i].DailyFee).ToString("C")}");
+                Console.WriteLine($"#{Convert.ToString(camps[i].Id),-15} {Convert.ToString(camps[i].Name),-35} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(camps[i].OpenMonth),-15} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(camps[i].CloseMonth),-15} {(camps[i].DailyFee).ToString("C")}");
             }
             Console.WriteLine();
             SelectACommand(2);
@@ -159,11 +159,11 @@ namespace Capstone
                 Console.WriteLine("Park Campgrounds");
                 Console.WriteLine($"{parksDict[parkId].Name} National Park Campgrounds");
                 Console.WriteLine();
-                Console.WriteLine($"    {"Name",-35}{"Open",-15}{"Close",-15}{"Daily Fee",-15}");
+                Console.WriteLine($"{"",-18}{"Name",-35}{"Open",-16}{"Close",-16}{"Daily Fee",-15}");
                 IList<Campground> camps = campgroundDAO.GetCampgrounds(parkId);
                 for (int i = 0; i < camps.Count; i++)
                 {
-                    Console.WriteLine($"#{i + 1} {Convert.ToString(camps[i].Name),-35} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(camps[i].OpenMonth),-15} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(camps[i].CloseMonth),-15} {(camps[i].DailyFee).ToString("C")}");
+                    Console.WriteLine($"#{Convert.ToString(camps[i].Id), -15} {Convert.ToString(camps[i].Name),-35} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(camps[i].OpenMonth),-15} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(camps[i].CloseMonth),-15} {(camps[i].DailyFee).ToString("C")}");
                 }
                 Console.WriteLine();
 
@@ -171,6 +171,13 @@ namespace Capstone
                 int campgroundNumber = Convert.ToInt32(Console.ReadLine().Trim());
                 if (campgroundNumber == 0)
                 {
+                    Console.Clear();
+                    GetCampgrounds(parkId);
+                }
+                if (campgroundNumber != camps[0].Id && campgroundNumber != camps[1].Id && campgroundNumber != camps[2].Id)
+                {
+                    Console.WriteLine("Please enter a valid option");
+                    Console.ReadLine();
                     Console.Clear();
                     GetCampgrounds(parkId);
                 }
