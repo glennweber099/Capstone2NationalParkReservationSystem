@@ -41,7 +41,6 @@ namespace Capstone.DAL
                         site.SiteNumber = Convert.ToInt32(reader["site_number"]);
                         topFiveSites.Add(site);
                     }
-                    
                     return topFiveSites;
                 }
             }
