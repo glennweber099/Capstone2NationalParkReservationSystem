@@ -168,6 +168,11 @@ namespace Capstone
 
             Console.WriteLine("Which campground (enter 0 to cancel)?_____");
             int campgroundNumber = Convert.ToInt32(Console.ReadLine().Trim());
+            if (campgroundNumber == 0)
+            {
+                Console.Clear();
+                GetCampgrounds(parkId);
+            }
             Console.WriteLine("What is the arrival date? MM/DD/YYYY");
             string arrivalDate = Console.ReadLine().Trim();
             Console.WriteLine("What is the departure date? MM/DD/YYYY");
@@ -187,8 +192,28 @@ namespace Capstone
             }
             Console.WriteLine();
             Console.WriteLine("Which site should be reserved (enter 0 to cancel)?__");
+            int siteNumber = Convert.ToInt32(Console.ReadLine().Trim());
+            if (siteNumber == 0)
+            {
+                Console.Clear();
+                GetCampgrounds(parkId);
+            }
             Console.WriteLine("What name should the reservation be made under?");
-            Console.ReadLine();
+            string name = Console.ReadLine().Trim();
+            Console.Clear();
+            MakeReservation(siteNumber, name, arrival, departure);
         }  
+
+        private void MakeReservation(int siteNumber, string name, string arrival, string departure)
+        {
+            Reservation reservation = new Reservation();
+            reservation.SiteId = siteNumber;
+            reservation.Name = name;
+            reservation.FromDate = Convert.ToDateTime(arrival);
+            reservation.ToDate = Convert.ToDateTime(departure);
+            reservation.Id = reservationDAO.MakeReservation(reservation);
+            Console.WriteLine($"The reservation has been made and the confirmation id is: {reservation.Id}");
+            Console.ReadLine();
+        }
     }
 }

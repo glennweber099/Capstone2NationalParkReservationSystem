@@ -22,7 +22,7 @@ namespace Capstone.DAL
                 {
                     connection.Open();
 
-                    SqlCommand cmd = new SqlCommand("Insert Into reservation(site_id, name, from_date, to_date, create_date) Values (@siteId, @name, @fromDate, @toDate, @createDate); Select @@Identity");
+                    SqlCommand cmd = new SqlCommand("Insert Into reservation(site_id, name, from_date, to_date, create_date) Values (@siteId, @name, @fromDate, @toDate, @createDate); Select @@Identity", connection);
                     cmd.Parameters.AddWithValue("@siteId", reservation.SiteId);
                     cmd.Parameters.AddWithValue("@name", reservation.Name);
                     cmd.Parameters.AddWithValue("@fromDate", reservation.FromDate);

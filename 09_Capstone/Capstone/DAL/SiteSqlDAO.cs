@@ -22,7 +22,7 @@ namespace Capstone.DAL
                 {
                     connection.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT TOP 5 site.*, campground.* FROM site JOIN reservation ON site.site_id = reservation.site_id JOIN campground ON site.campground_id = campground.campground_id WHERE campground.campground_id = @campground_id AND(@departure < reservation.from_date OR @arrival > reservation.to_date) GROUP BY site.site_id, site.campground_id, site.site_number, site.max_occupancy, site.accessible, site.max_rv_length, site.utilities, campground.campground_id, campground.park_id, campground.name, campground.open_from_mm, campground.open_to_mm, campground.daily_fee", connection);
+                    SqlCommand cmd = new SqlCommand("SELECT TOP 5 site.*, campground.* FROM site JOIN reservation ON site.site_id = reservation.site_id JOIN campground ON site.campground_id = campground.campground_id WHERE campground.campground_id = @campground_id AND(@departure <= reservation.from_date OR @arrival >= reservation.to_date) GROUP BY site.site_id, site.campground_id, site.site_number, site.max_occupancy, site.accessible, site.max_rv_length, site.utilities, campground.campground_id, campground.park_id, campground.name, campground.open_from_mm, campground.open_to_mm, campground.daily_fee", connection);
                     cmd.Parameters.AddWithValue("@campground_id", campgroundId);
                     cmd.Parameters.AddWithValue("@arrival", arrival);
                     cmd.Parameters.AddWithValue("@departure", departure);
