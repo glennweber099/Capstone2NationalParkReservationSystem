@@ -69,7 +69,7 @@ namespace Capstone
                 }
             }
         }
-
+        
         private void ParkInformationScreen()
         {
             Console.WriteLine(parksDict[parkId].Name);
@@ -174,12 +174,15 @@ namespace Capstone
                     Console.Clear();
                     GetCampgrounds(parkId);
                 }
+                // campgroundNumber = camps[campgroundNumber - 1].Id; // this should work
                 Console.WriteLine("What is the arrival date? MM/DD/YYYY");
                 string arrivalDate = Console.ReadLine().Trim();
                 bool isAnArrivalDate = DateTime.TryParse(arrivalDate, out DateTime actualArrivalDate);
+
                 Console.WriteLine("What is the departure date? MM/DD/YYYY");
                 string departureDate = Console.ReadLine().Trim();
                 bool isADepartureDate = DateTime.TryParse(departureDate, out DateTime actualDepartureDate);
+
                 int totalDays = 0;
                 if (isAnArrivalDate && isADepartureDate)
                 {
