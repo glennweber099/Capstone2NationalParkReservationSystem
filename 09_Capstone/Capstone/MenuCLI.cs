@@ -3,6 +3,7 @@ using Capstone.Models;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -131,7 +132,7 @@ namespace Capstone
                     Console.WriteLine("Please enter a valid selection.");
                     Console.ReadLine();
                     Console.Clear();
-                    ParkInformationScreen();
+                    GetCampgrounds(parkId);
                 }
             }
         }
@@ -146,7 +147,7 @@ namespace Capstone
             IList<Campground> camps = campgroundDAO.GetCampgrounds(parkId);
             for (int i = 0; i < camps.Count; i++)
             {
-                Console.WriteLine($"#{i + 1} {Convert.ToString(camps[i].Name),-35} {Convert.ToString(camps[i].OpenMonth),-15} {Convert.ToString(camps[i].CloseMonth),-15} {(camps[i].DailyFee).ToString("C")}");
+                Console.WriteLine($"#{i + 1} {Convert.ToString(camps[i].Name),-35} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(camps[i].OpenMonth),-15} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(camps[i].CloseMonth),-15} {(camps[i].DailyFee).ToString("C")}");
             }
             Console.WriteLine();
             SelectACommand(2);
@@ -154,34 +155,51 @@ namespace Capstone
 
         private void CheckAvailability(int selection)
         {
-            Console.Clear();
-            Console.WriteLine("Park Campgrounds");
-            Console.WriteLine($"{parksDict[parkId].Name} National Park Campgrounds");
-            Console.WriteLine();
-            Console.WriteLine($"    {"Name",-35}{"Open",-15}{"Close",-15}{"Daily Fee",-15}");
-            IList<Campground> camps = campgroundDAO.GetCampgrounds(parkId);
-            for (int i = 0; i < camps.Count; i++)
-            {
-                Console.WriteLine($"#{i + 1} {Convert.ToString(camps[i].Name),-35} {Convert.ToString(camps[i].OpenMonth),-15} {Convert.ToString(camps[i].CloseMonth),-15} {(camps[i].DailyFee).ToString("C")}");
-            }
-            Console.WriteLine();
-
-            Console.WriteLine("Which campground (enter 0 to cancel)?_____");
-            int campgroundNumber = Convert.ToInt32(Console.ReadLine().Trim());
-            if (campgroundNumber == 0)
+            while (true)
             {
                 Console.Clear();
-                GetCampgrounds(parkId);
+                Console.WriteLine("Park Campgrounds");
+                Console.WriteLine($"{parksDict[parkId].Name} National Park Campgrounds");
+                Console.WriteLine();
+                Console.WriteLine($"    {"Name",-35}{"Open",-15}{"Close",-15}{"Daily Fee",-15}");
+                IList<Campground> camps = campgroundDAO.GetCampgrounds(parkId);
+                for (int i = 0; i < camps.Count; i++)
+                {
+                    Console.WriteLine($"#{i + 1} {Convert.ToString(camps[i].Name),-35} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(camps[i].OpenMonth),-15} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(camps[i].CloseMonth),-15} {(camps[i].DailyFee).ToString("C")}");
+                }
+                Console.WriteLine();
+
+                Console.WriteLine("Which campground (enter 0 to cancel)?_____");
+                int campgroundNumber = Convert.ToInt32(Console.ReadLine().Trim());
+                if (campgroundNumber == 0)
+                {
+                    Console.Clear();
+                    GetCampgrounds(parkId);
+                }
+                Console.WriteLine("What is the arrival date? MM/DD/YYYY");
+                string arrivalDate = Console.ReadLine().Trim();
+                bool isAnArrivalDate = DateTime.TryParse(arrivalDate, out DateTime actualArrivalDate);
+                Console.WriteLine("What is the departure date? MM/DD/YYYY");
+                string departureDate = Console.ReadLine().Trim();
+                bool isADepartureDate = DateTime.TryParse(departureDate, out DateTime actualDepartureDate);
+                int totalDays = 0;
+                if (isAnArrivalDate && isADepartureDate)
+                {
+                    totalDays = (actualDepartureDate - actualArrivalDate).Days;
+                }
+                if (totalDays <= 0)
+                {
+                    Console.WriteLine("Please enter a valid time frame.");
+                    Console.ReadLine();
+                    continue;
+                }
+
+                Console.Clear();
+                TopFiveSites(campgroundNumber, arrivalDate, departureDate, totalDays);
             }
-            Console.WriteLine("What is the arrival date? MM/DD/YYYY");
-            string arrivalDate = Console.ReadLine().Trim();
-            Console.WriteLine("What is the departure date? MM/DD/YYYY");
-            string departureDate = Console.ReadLine().Trim();
-            Console.Clear();
-            TopFiveSites(campgroundNumber, arrivalDate, departureDate);
         }
 
-        private void TopFiveSites(int campgroundId, string arrival, string departure)
+        private void TopFiveSites(int campgroundId, string arrival, string departure, int totalDays)
         {
             while (true)
             {
@@ -190,7 +208,7 @@ namespace Capstone
                 IList<Site> topFiveSites = siteDAO.TopFiveSites(campgroundId, Convert.ToDateTime(arrival), Convert.ToDateTime(departure));
                 for (int i = 0; i < topFiveSites.Count; i++)
                 {
-                    Console.WriteLine($"{ Convert.ToString(topFiveSites[i].SiteNumber),-15}{ Convert.ToString(topFiveSites[i].MaxOccupancy),-15}{((topFiveSites[i].IsAccessible) == false ? "No" : "Yes"),-15}{ Convert.ToString(topFiveSites[i].MaxRVLength),-15}{ ((topFiveSites[i].HasUtilities) == false ? "No" : "Yes"),-15}{(topFiveSites[i].DailyFee).ToString("C")}");
+                    Console.WriteLine($"{ Convert.ToString(topFiveSites[i].SiteNumber),-15}{ Convert.ToString(topFiveSites[i].MaxOccupancy),-15}{((topFiveSites[i].IsAccessible) == false ? "No" : "Yes"),-15}{ Convert.ToString(topFiveSites[i].MaxRVLength),-15}{ ((topFiveSites[i].HasUtilities) == false ? "No" : "Yes"),-15}{(topFiveSites[i].DailyFee * totalDays).ToString("C")}");
                 }
                 Console.WriteLine();
                 Console.WriteLine("Which site should be reserved (enter 0 to cancel)?__");
