@@ -168,9 +168,9 @@ namespace Capstone
 
             Console.WriteLine("Which campground (enter 0 to cancel)?_____");
             int campgroundNumber = Convert.ToInt32(Console.ReadLine().Trim());
-            Console.WriteLine("What is the arrival date? __/__/____");
+            Console.WriteLine("What is the arrival date? MM/DD/YYYY");
             string arrivalDate = Console.ReadLine().Trim();
-            Console.WriteLine("What is the departure date? __/__/____");
+            Console.WriteLine("What is the departure date? MM/DD/YYYY");
             string departureDate = Console.ReadLine().Trim();
             Console.Clear();
             TopFiveSites(campgroundNumber, arrivalDate, departureDate);
@@ -179,18 +179,16 @@ namespace Capstone
         private void TopFiveSites(int campgroundId, string arrival, string departure)
         {
             Console.WriteLine("Results Matching Your Search Criteria");
-            Console.WriteLine($"/n {"Site No.", -20}{"Max Occup.",-20}{"Accessible?",-20}{"Max RV Length",-30}{"Utility",-20}{"Cost",-20}");
+            Console.WriteLine($"{"Site No.", -15}{"Max Occup.",-15}{"Accessible?",-15}{"Max RV Length",-15}{"Utility",-15}{"Cost",-15}");
             IList<Site> topFiveSites = siteDAO.TopFiveSites(campgroundId, Convert.ToDateTime(arrival), Convert.ToDateTime(departure));
             for (int i = 0; i < topFiveSites.Count; i++)
             {
-                Console.WriteLine($"{ Convert.ToString(topFiveSites[i].SiteNumber),-35}{ Convert.ToString(topFiveSites[i].MaxOccupancy),-15}{ Convert.ToString(topFiveSites[i].IsAccessible),-15}{ Convert.ToString(topFiveSites[i].MaxRVLength),-35}{ Convert.ToString(topFiveSites[i].HasUtilities),-35}{(topFiveSites[i].DailyFee).ToString("C")}");
+                Console.WriteLine($"{ Convert.ToString(topFiveSites[i].SiteNumber),-15}{ Convert.ToString(topFiveSites[i].MaxOccupancy),-15}{((topFiveSites[i].IsAccessible) == false ? "No" : "Yes") ,-15}{ Convert.ToString(topFiveSites[i].MaxRVLength),-15}{ ((topFiveSites[i].HasUtilities) == false ? "No" : "Yes"), -15}{(topFiveSites[i].DailyFee).ToString("C")}");
             }
             Console.WriteLine();
-            Console.WriteLine("/n Which site should be reserved (enter 0 to cancel)?__");
+            Console.WriteLine("Which site should be reserved (enter 0 to cancel)?__");
             Console.WriteLine("What name should the reservation be made under?");
             Console.ReadLine();
-        }
-
-        
+        }  
     }
 }
