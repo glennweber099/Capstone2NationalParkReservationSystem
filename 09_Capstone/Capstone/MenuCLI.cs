@@ -1,11 +1,9 @@
 ﻿using Capstone.DAL;
 using Capstone.Models;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Text;
+
 
 namespace Capstone
 {
@@ -169,7 +167,7 @@ namespace Capstone
                 }
                 Console.WriteLine();
 
-                Console.WriteLine("Which campground (enter 0 to cancel)?_____");
+                Console.WriteLine("Which campground (enter 0 to cancel)?__");
                 int campgroundNumber = Convert.ToInt32(Console.ReadLine().Trim());
                 if (campgroundNumber == 0)
                 {
@@ -208,7 +206,7 @@ namespace Capstone
                 IList<Site> topFiveSites = siteDAO.TopFiveSites(campgroundId, Convert.ToDateTime(arrival), Convert.ToDateTime(departure));
                 for (int i = 0; i < topFiveSites.Count; i++)
                 {
-                    Console.WriteLine($"{ Convert.ToString(topFiveSites[i].SiteNumber),-15}{ Convert.ToString(topFiveSites[i].MaxOccupancy),-15}{((topFiveSites[i].IsAccessible) == false ? "No" : "Yes"),-15}{ Convert.ToString(topFiveSites[i].MaxRVLength),-15}{ ((topFiveSites[i].HasUtilities) == false ? "No" : "Yes"),-15}{(topFiveSites[i].DailyFee * totalDays).ToString("C")}");
+                    Console.WriteLine($"{ Convert.ToString(topFiveSites[i].Id),-15}{ Convert.ToString(topFiveSites[i].MaxOccupancy),-15}{((topFiveSites[i].IsAccessible) == false ? "No" : "Yes"),-15}{ Convert.ToString(topFiveSites[i].MaxRVLength),-15}{ ((topFiveSites[i].HasUtilities) == false ? "No" : "Yes"),-15}{(topFiveSites[i].DailyFee * totalDays).ToString("C")}");
                 }
                 Console.WriteLine();
                 Console.WriteLine("Which site should be reserved (enter 0 to cancel)?__");
@@ -260,6 +258,7 @@ namespace Capstone
             reservation.Id = reservationDAO.MakeReservation(reservation);
             Console.WriteLine($"The reservation has been made and the confirmation id is: {reservation.Id}");
             Console.ReadLine();
+            Console.Clear();
         }
     }
 }
