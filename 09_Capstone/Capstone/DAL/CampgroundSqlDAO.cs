@@ -22,7 +22,7 @@ namespace Capstone.DAL
                 {
                     connection.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT * FROM park WHERE campground_id = @campground_id AND open_from_mm <= @arrival AND open_to_mm >= @departure");
+                    SqlCommand cmd = new SqlCommand("SELECT * FROM campground WHERE campground_id = @campground_id AND open_from_mm <= @arrival AND open_to_mm >= @departure", connection);
                     cmd.Parameters.AddWithValue("@campground_id", campgroundId);
                     cmd.Parameters.AddWithValue("@arrival", arrival.Month);
                     cmd.Parameters.AddWithValue("@departure", arrival.Month);

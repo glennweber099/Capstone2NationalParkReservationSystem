@@ -7,8 +7,7 @@ namespace Capstone.DAL
 {
     public interface IParkSqlDAO
     {
-        IList<Park> GetParks(); //Possible change to list of strings if we only use it when displaying the names in the menu
-        int SelectPark(int parkId);
+        IList<Park> GetParks(); 
         Park GetPark(int parkId);
     }
 }

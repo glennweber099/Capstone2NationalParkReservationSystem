@@ -22,7 +22,7 @@ namespace Capstone.DAL
                 {
                     connection.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT * FROM park WHERE park_id = @park_id");
+                    SqlCommand cmd = new SqlCommand("SELECT * FROM park WHERE park_id = @park_id", connection);
                     cmd.Parameters.AddWithValue("@park_id", parkId);
                     SqlDataReader reader = cmd.ExecuteReader();
                     Park park = new Park();
@@ -76,11 +76,6 @@ namespace Capstone.DAL
                 Console.WriteLine(ex.Message);
                 throw;
             }
-        }
-
-        public int SelectPark(int parkId)
-        {
-            throw new NotImplementedException();
         }
     }
 }
