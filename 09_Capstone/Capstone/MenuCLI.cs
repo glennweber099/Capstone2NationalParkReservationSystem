@@ -183,25 +183,53 @@ namespace Capstone
 
         private void TopFiveSites(int campgroundId, string arrival, string departure)
         {
-            Console.WriteLine("Results Matching Your Search Criteria");
-            Console.WriteLine($"{"Site No.", -15}{"Max Occup.",-15}{"Accessible?",-15}{"Max RV Length",-15}{"Utility",-15}{"Cost",-15}");
-            IList<Site> topFiveSites = siteDAO.TopFiveSites(campgroundId, Convert.ToDateTime(arrival), Convert.ToDateTime(departure));
-            for (int i = 0; i < topFiveSites.Count; i++)
+            while (true)
             {
-                Console.WriteLine($"{ Convert.ToString(topFiveSites[i].SiteNumber),-15}{ Convert.ToString(topFiveSites[i].MaxOccupancy),-15}{((topFiveSites[i].IsAccessible) == false ? "No" : "Yes") ,-15}{ Convert.ToString(topFiveSites[i].MaxRVLength),-15}{ ((topFiveSites[i].HasUtilities) == false ? "No" : "Yes"), -15}{(topFiveSites[i].DailyFee).ToString("C")}");
+                Console.WriteLine("Results Matching Your Search Criteria");
+                Console.WriteLine($"{"Site No.",-15}{"Max Occup.",-15}{"Accessible?",-15}{"Max RV Length",-15}{"Utility",-15}{"Cost",-15}");
+                IList<Site> topFiveSites = siteDAO.TopFiveSites(campgroundId, Convert.ToDateTime(arrival), Convert.ToDateTime(departure));
+                for (int i = 0; i < topFiveSites.Count; i++)
+                {
+                    Console.WriteLine($"{ Convert.ToString(topFiveSites[i].SiteNumber),-15}{ Convert.ToString(topFiveSites[i].MaxOccupancy),-15}{((topFiveSites[i].IsAccessible) == false ? "No" : "Yes"),-15}{ Convert.ToString(topFiveSites[i].MaxRVLength),-15}{ ((topFiveSites[i].HasUtilities) == false ? "No" : "Yes"),-15}{(topFiveSites[i].DailyFee).ToString("C")}");
+                }
+                Console.WriteLine();
+                Console.WriteLine("Which site should be reserved (enter 0 to cancel)?__");
+                bool isANumber = int.TryParse(Console.ReadLine(), out int siteNumber);
+                if (!isANumber)
+                {
+                    Console.WriteLine("Please enter a valid option");
+                    Console.ReadLine();
+                    Console.Clear();
+                    continue;
+                }
+                if (siteNumber == 0)
+                {
+                    Console.Clear();
+                    GetCampgrounds(parkId);
+                }
+                bool containsId = false;
+                foreach (Site site in topFiveSites)
+                {
+                    if (site.Id == siteNumber)
+                    {
+                        containsId = true;
+                    }
+                }
+                if (containsId)
+                {
+                    Console.WriteLine("What name should the reservation be made under?");
+                    string name = Console.ReadLine().Trim();
+                    Console.Clear();
+                    MakeReservation(siteNumber, name, arrival, departure);
+                }
+                else
+                {
+                    Console.WriteLine("Please enter a valid option");
+                    Console.ReadLine();
+                    Console.Clear();
+                    continue;
+                }
             }
-            Console.WriteLine();
-            Console.WriteLine("Which site should be reserved (enter 0 to cancel)?__");
-            int siteNumber = Convert.ToInt32(Console.ReadLine().Trim());
-            if (siteNumber == 0)
-            {
-                Console.Clear();
-                GetCampgrounds(parkId);
-            }
-            Console.WriteLine("What name should the reservation be made under?");
-            string name = Console.ReadLine().Trim();
-            Console.Clear();
-            MakeReservation(siteNumber, name, arrival, departure);
         }  
 
         private void MakeReservation(int siteNumber, string name, string arrival, string departure)
