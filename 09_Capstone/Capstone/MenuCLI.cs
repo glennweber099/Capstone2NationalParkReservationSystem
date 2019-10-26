@@ -168,13 +168,19 @@ namespace Capstone
                 Console.WriteLine();
 
                 Console.WriteLine("Which campground (enter 0 to cancel)?__");
-                int campgroundNumber = Convert.ToInt32(Console.ReadLine().Trim());
+                int campgroundNumber = -1;
+                bool isANumber = int.TryParse(Console.ReadLine(), out campgroundNumber);
+                //int campgroundNumber = Convert.ToInt32(Console.ReadLine().Trim());
+                if (!isANumber)
+                {
+                    campgroundNumber = -1;
+                }
                 if (campgroundNumber == 0)
                 {
                     Console.Clear();
                     GetCampgrounds(parkId);
                 }
-                if (campgroundNumber != camps[0].Id && campgroundNumber != camps[1].Id && campgroundNumber != camps[2].Id)
+                if ((campgroundNumber != camps[0].Id && campgroundNumber != camps[1].Id && campgroundNumber != camps[2].Id) || campgroundNumber == -1)
                 {
                     Console.WriteLine("Please enter a valid option");
                     Console.ReadLine();

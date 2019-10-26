@@ -60,11 +60,16 @@ namespace Capstone.Tests
             //Arrange
             ReservationSqlDAO dao = new ReservationSqlDAO(connectionString);
             Reservation reservation = new Reservation();
-
+            reservation.FromDate = new DateTime(2019, 5, 11);
+            reservation.ToDate = new DateTime(2019, 5, 13);
+            reservation.Name = "Glenn";
+            reservation.SiteId = newSiteId;
+            
             //Act
-            int actualResult = dao.MakeReservation()
-            //Assert
+            int actualResult = dao.MakeReservation(reservation);
 
+            //Assert
+            Assert.AreEqual(newReservationId + 1, actualResult);
         }
     }
 }
