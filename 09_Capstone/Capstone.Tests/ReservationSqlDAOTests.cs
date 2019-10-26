@@ -9,9 +9,62 @@ using System.Transactions;
 
 namespace Capstone.Tests
 {
-    //[TestMethod]
+    [TestClass]
     public class ReservationSqlDAOTests
     {
+        private TransactionScope transaction;
+        const string connectionString = "Server=.\\SQLEXPRESS;Database=npcampground;Trusted_Connection=True;";
+        private int newCampId = 0;
+        private int parkId = 0;
+        private int newSiteId = 0;
+        private int newReservationId = 0;
 
+        [TestInitialize]
+        public void Setup()
+        {
+            // Begin a transaction
+            this.transaction = new TransactionScope();
+            string script;
+            // Load a script file to setup the db the way we want it
+            using (StreamReader sr = new StreamReader("..//..//..//test_setup.sql"))
+            {
+                script = sr.ReadToEnd();
+            }
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(script, conn);
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+
+                if (rdr.Read())
+                {
+                    newCampId = Convert.ToInt32(rdr["NewCamp"]);
+                    parkId = Convert.ToInt32(rdr["NewPark"]);
+                    newSiteId = Convert.ToInt32(rdr["NewSite"]);
+                    newReservationId = Convert.ToInt32(rdr["NewReservation"]);
+                }
+            }
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            this.transaction.Dispose();
+        }
+
+        [TestMethod]
+        public void MakeReservation()
+        {
+            //Arrange
+            ReservationSqlDAO dao = new ReservationSqlDAO(connectionString);
+            Reservation reservation = new Reservation();
+
+            //Act
+            int actualResult = dao.MakeReservation()
+            //Assert
+
+        }
     }
 }
